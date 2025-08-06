@@ -75,8 +75,6 @@ def find_new_section_time(
         key=lambda item: len(item[1]),
         reverse=True
     )
-
-    print("\n--- Analysis of Potential New Section Slots ---")
     
     found_suitable_split = False
     for slot, students in sorted_potential_sections:
