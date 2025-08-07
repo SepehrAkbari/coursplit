@@ -139,21 +139,21 @@ def processSchedule(excel_file: str, json_file: str, output_csv: str):
     output_df.to_csv(output_csv, index=False)
 
 
-# '''
-# USAGE BLUEPRINT -- IMPLEMENT IN FASTAPI
-# '''
-# if __name__ == "__main__":
-#     print("Processing...")
+'''
+USAGE BLUEPRINT -- IMPLEMENT IN FASTAPI
+'''
+if __name__ == "__main__":
+    print("Processing...")
 
-#     # Path to the data directory
-#     data_dir = "../../data"
+    # Path to the data directory
+    data_dir = "../../data"
 
-#     # Path to the Excel file with course registrations
-#     registrations = f'{data_dir}/FA25_registrations.xlsx'
-#     # Path to a JSON file with the schedule blocks
-#     schedule = f'{data_dir}/FA25_blocks.json'
-#     # Path to save output CSV file with busy and available slots
-#     availability = f'{data_dir}/FA25_student_availability.csv'
+    # Path to the Excel file with course registrations
+    registrations = f'{data_dir}/FA25_registrations.xlsx'
+    # Path to a JSON file with the schedule blocks
+    schedule = f'{data_dir}/FA25_blocks.json'
+    # Path to save output CSV file with busy and available slots
+    availability = f'{data_dir}/FA25_student_availability.csv'
 
-#     processSchedule(registrations, schedule, availability)
-#     print(f"Output written to {availability}")
+    processSchedule(registrations, schedule, availability)
+    print(f"Output written to {availability}")
