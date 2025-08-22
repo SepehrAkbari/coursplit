@@ -3,7 +3,7 @@ import json
 from typing import Dict, List, Any
 from collections import defaultdict
 
-from ProcessData import *
+from .ProcessData import *
 
 
 def readData(excel_file: str, schedule_json: str) -> pd.DataFrame:

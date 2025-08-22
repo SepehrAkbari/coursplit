@@ -63,25 +63,25 @@
         {
             "slot": "K",
             "days": ["Monday", "Wednesday", "Friday"],
-            "start_time": "16:00:00",
-            "end_time": "20:50:00"
+            "start_time": "19:00:00",
+            "end_time": "20:20:00"
         },
         {
             "slot": "L",
             "days": ["Monday", "Wednesday", "Friday"],
-            "start_time": "21:00:00",
+            "start_time": "20:30:00",
             "end_time": "21:50:00"
         },
         {
             "slot": "M",
             "days": ["Tuesday", "Thursday"],
-            "start_time": "16:00:00",
-            "end_time": "20:50:00"
+            "start_time": "19:00:00",
+            "end_time": "20:20:00"
         },
         {
             "slot": "N",
             "days": ["Tuesday", "Thursday"],
-            "start_time": "21:00:00",
+            "start_time": "20:30:00",
             "end_time": "21:50:00"
         }
     ]
