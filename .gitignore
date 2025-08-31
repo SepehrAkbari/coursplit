@@ -1,5 +1,7 @@
 .venv/
 __pycache__/
 *.pyc
-uploads/*
 _test
+
+# ignore uploads/* other than uploads/placeholder
+uploads/*
