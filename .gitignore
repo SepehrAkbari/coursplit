@@ -3,5 +3,5 @@ __pycache__/
 *.pyc
 _test
 
-# ignore uploads/* other than uploads/placeholder
 uploads/*
+!uploads/.gitkeep
