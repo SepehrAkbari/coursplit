@@ -1,0 +1,4 @@
+watchdog
+streamlit==1.49.1
+pandas
+openpyxl

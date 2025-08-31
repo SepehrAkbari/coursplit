@@ -1,3 +1,5 @@
-.bvenv/
+.venv/
 __pycache__/
 *.pyc
+uploads/*
+_test
