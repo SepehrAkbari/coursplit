@@ -7,6 +7,15 @@ UPLOAD_DIR = "uploads"
 SCHEDULE_JSON = "const/FA25_blocks.json"
 MIN_STUDENTS_DEFAULT = 5
 
+if "schedule_path" not in st.session_state:
+    st.session_state["schedule_path"] = SCHEDULE_JSON
+if "show_json_upload" not in st.session_state:
+    st.session_state["show_json_upload"] = False
+
+@st.cache_data
+def load_data(excel_path, schedule_path):
+    return readData(excel_path, schedule_path)
+
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 st.title("Course Splitter")
@@ -25,14 +34,32 @@ if uploaded_file:
     
     st.session_state["excel_path"] = temp_excel_path
     st.success("File uploaded successfully!")
+    
+    col1, col2 = st.columns([5, 1])
+    col1.write(f"Using schedule reference: {os.path.basename(st.session_state['schedule_path'])}")
+    col1.write("If you want to use a different schedule, press the upload button. Make sure the JSON format matches the expected structure.")
+    if col2.button("Upload file"):
+        st.session_state["show_json_upload"] = True
 
-if "excel_path" in st.session_state and os.path.exists(SCHEDULE_JSON):
+    if st.session_state["show_json_upload"]:
+        json_upload = st.file_uploader("Upload custom schedule JSON", type=["json"])
+        if json_upload:
+            temp_json_path = os.path.join(UPLOAD_DIR, f"{uuid.uuid4()}.json")
+            with open(temp_json_path, "wb") as f:
+                f.write(json_upload.getvalue())
+            st.session_state["schedule_path"] = temp_json_path
+            st.session_state["show_json_upload"] = False
+            st.success("Custom schedule uploaded successfully!")
+            st.cache_data.clear()
+            st.rerun()
+
+if "excel_path" in st.session_state and os.path.exists(st.session_state["schedule_path"]):
     try:
         @st.cache_data
         def load_data(excel_path, schedule_json):
             return readData(excel_path, schedule_json)
         
-        df_courses, schedule = load_data(st.session_state["excel_path"], SCHEDULE_JSON)
+        df_courses, schedule = load_data(st.session_state["excel_path"], st.session_state["schedule_path"])
         
         ## COURSE SELECTION
 
@@ -53,15 +80,16 @@ if "excel_path" in st.session_state and os.path.exists(SCHEDULE_JSON):
 
                 ## AVAILABLE SLOTS
                 
-                suggested_slots = proposeSections(st.session_state["excel_path"], SCHEDULE_JSON, selected_course, min_students)
+                suggested_slots = proposeSections(st.session_state["excel_path"], st.session_state["schedule_path"], selected_course, min_students)
                 if suggested_slots:
                     st.subheader("Available Slots")
 
                     slot_data = [
                         {
-                            "Slot": f"Block {slot} ({slotInfo(slot, SCHEDULE_JSON)[0]} {slotInfo(slot, SCHEDULE_JSON)[1]})",
+                            "Slot": f"Block {slot} ({slotInfo(slot, st.session_state['schedule_path'])[0]} {slotInfo(slot, st.session_state['schedule_path'])[1]})",
                             "Available Students": len(students)
                         }
+
                         for slot, students in suggested_slots.items()
                     ]
                     st.dataframe(slot_data, hide_index=True)
@@ -72,7 +100,7 @@ if "excel_path" in st.session_state and os.path.exists(SCHEDULE_JSON):
                     if selected_slot:
                         students_to_shift = proposeShifts(suggested_slots, selected_slot)
                         if students_to_shift:
-                            st.subheader(f"Students Available to Shift to Slot {selected_slot}")
+                            st.subheader(f"Slot {selected_slot}'s proposed shifts")
                             
                             original_students = getStudentsInSection(df_courses, selected_course)
                             original_slot = getCourseSlot(df_courses, schedule, selected_course)
@@ -106,5 +134,7 @@ if "excel_path" in st.session_state and os.path.exists(SCHEDULE_JSON):
     except Exception as e:
         st.error(f"Error processing data: {str(e)}")
 else:
-    if not os.path.exists(SCHEDULE_JSON):
-        st.error("Schedule JSON file not found. Place 'FA25_blocks.json' in the project root.")
+    if "excel_path" not in st.session_state:
+        st.info("Please upload the Excel file to proceed.")
+    elif not os.path.exists(st.session_state["schedule_path"]):
+        st.error("Schedule JSON file not found. Please ensure it's available or upload a custom one.")
