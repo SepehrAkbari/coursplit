@@ -133,7 +133,7 @@ def processSchedule(excel_file: str, json_file: str):
     
     all_slots = getAllSlots(schedule)
     
-    grouped = df.groupby('modified_id')
+    grouped = df.groupby('id')
     
     output_records = []
     for student_id, courses in grouped:
@@ -141,7 +141,7 @@ def processSchedule(excel_file: str, json_file: str):
         available_slots = [slot for slot in all_slots if slot not in busy_slots]
 
         output_records.append({
-            'modified_id': student_id,
+            'id': student_id,
             'busy_slots': '-'.join(busy_slots),
             'available_slots': '-'.join(available_slots)
         })
@@ -214,7 +214,7 @@ def getStudentsInSection(df_courses: pd.DataFrame, target_course_code: str) -> p
     if students_in_section.empty:
         raise ValueError(f"No students found in section '{target_course_code}'. Please check the course code.")
 
-    original_student_ids = students_in_section['modified_id'].unique()
+    original_student_ids = students_in_section['id'].unique()
     return original_student_ids
 
 
@@ -232,7 +232,7 @@ def getAvailability(df_courses: pd.DataFrame, schedule: Dict[str, Any],
     
     student_busy_slots: Dict[str, List[str]] = {}
     for student_id in original_student_ids:
-        student_courses = df_courses[df_courses['modified_id'] == student_id]
+        student_courses = df_courses[df_courses['id'] == student_id]
         student_busy_slots[student_id] = getBusySlots(student_courses, schedule)
 
     student_available_slots: Dict[str, List[str]] = {}
